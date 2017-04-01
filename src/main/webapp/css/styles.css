@@ -1,0 +1,96 @@
+body {
+  margin: 0;
+}
+h1 {
+  text-align: center;
+  text-decoration: underline;
+}
+#center {
+  width: calc(120vh - 5%);
+  margin-top: 2.5%;
+  margin-left: calc((105% - 120vh) / 2);
+  margin-right: calc((105% - 120vh) / 2);
+}
+@media all and (max-width: 120vh) {
+  #center {
+    width: 95%;
+    margin-left: 2.5%;
+    margin-right: 2.5%;
+  }
+}
+fieldset {
+  padding: 3px;
+  margin: 0;
+  border-radius: 6px;
+  border: 3px ridge grey;
+}
+.control {
+  text-align: center;
+}
+label {
+  display: inline-block;
+  width: 5em;
+}
+input {
+  width: 2em;
+}
+#calculate {
+  width: auto;
+  border: 3px ridge grey;
+  border-radius: 6px;
+}
+#display {
+  overflow: auto;
+}
+#inputDiagramContainer {
+  background-color: #F5F5F5;
+  width: 61%;
+  margin: 2.5%;
+  padding-top: 43%;
+  position: relative;
+  float: left;
+}
+#inputDiagram {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+#controls {
+  background-color: #F5F5F5;
+  float: left;
+  width: 28%;
+  margin: 2.5%;
+}
+#message {
+  text-align: center;
+  font-size: 1.5em;
+}
+#outputDiagrams {
+  overflow: auto;
+}
+.outputDiagramContainer {
+  background-color: #F5F5F5;
+  width: 28%;
+  margin: 2.5%;
+  padding-top: 28%;
+  position: relative;
+  float: left;
+}
+.outputDiagram {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+#more {
+  margin-top: 2.5%;
+  margin-bottom: 2.5%;
+  margin-left: 36%;
+  margin-right: 36%;
+  width: 27%;
+  height: 2em;
+  text-align: center;
+}

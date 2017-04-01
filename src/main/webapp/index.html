@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta charset="UTF-8"/>
+  <title>Feynman Diagram Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="css/styles.css"/>
+</head>
+
+<body>
+  <script src="js/jquery-2.1.0.min.js"></script>
+  <script src="js/jquery.feyn-1.0.1.min.js"></script>
+  <script src="js/autofeyn.js"></script>
+  <div id="center">
+    <h1>Feynman Diagram Calculator</h1>
+    <div id="display">
+      <div id="inputDiagramContainer">
+        <div id="inputDiagram">
+        </div>
+      </div>
+      <form id="controls" method="get">
+        <fieldset>
+          <fieldset>
+            <legend>Incoming Particles</legend>
+            <div class="control">
+              <label for="incomingElectrons">Electrons: </label>
+              <input id="incomingElectrons" type="number" min="0" max="9" value="1" onchange="updateDisplay()" />
+            </div>
+            <div class="control">
+              <label for="incomingPositrons">Positrons: </label>
+              <input id="incomingPositrons" type="number" min="0" max="9" value="1" onchange="updateDisplay()" />
+            </div>
+            <div class="control">
+              <label for="incomingPhotons">Photons: </label>
+              <input id="incomingPhotons" type="number" min="0" max="9" value="0" onchange="updateDisplay()" />
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Outgoing Particles</legend>
+            <div class="control">
+              <label for="outgoingElectrons">Electrons: </label>
+              <input id="outgoingElectrons" type="number" min="0" max="9" value="0" onchange="updateDisplay()" />
+            </div>
+            <div class="control">
+              <label for="outgoingPositrons">Positrons: </label>
+              <input id="outgoingPositrons" type="number" min="0" max="9" value="0" onchange="updateDisplay()" />
+            </div>
+            <div class="control">
+              <label for="outgoingPhotons">Photons: </label>
+              <input id="outgoingPhotons" type="number" min="0" max="9" value="1" onchange="updateDisplay()" />
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Interactions</legend>
+            <div class="control">
+              <label for="interactions">Interactions: </label>
+              <input id="interactions" type="number" min="0" max="9" value="1" onchange="updateDisplay()" />
+            </div>
+          </fieldset>
+          <input id="calculate" type="button" value="Calculate" onclick="getDiagrams(true)" />
+        </fieldset>
+      </form>
+    </div>
+    <p id="message">No diagrams to display.</p>
+    <div id="outputDiagrams">
+    </div>
+  </div>
+  <input id="more" type="button" value="Load more" onclick="getDiagrams(false)"/>
+<script>
+/* jshint esversion: 6, jquery: true, node: true */
+"use strict";
+var diagram; // Diagram object, used by discfeyn
+var request; // Displays parameters
+var reqUID;  // Unique ID for request
+var reqIdx;  // Request index
+var loaded = // Current loaded diagram params 
+  {
+    incoming: [],
+    outgoing: [],
+    vertex: [],
+  };
+/* Updates diagram and request vars from form details */
+function update() {
+  diagram = {
+    incoming: [],
+    outgoing: [],
+    vertex: [],
+    electron: [],
+    positron: [],
+    photon: [],
+  };
+  request = {
+    incomingElectrons: [],
+    incomingPositrons: [],
+    incomingPhotons: [],
+    outgoingElectrons: [],
+    outgoingPositrons: [],
+    outgoingPhotons: [],
+    interactions: [],
+  };
+  /* Returns an array of indices with the prefix prepended
+   * e.g. strArr(4, 3, "z") -> ["z4", "z5", "z6"]
+   */
+  function strArr(start, length, prefix) {
+    var arr = [];
+    for (var i = start; i < start + length; i++) {
+      arr.push(prefix + i);
+    }
+    return arr;
+  }
+  var ie = parseInt($("#incomingElectrons").val());
+  var ip = parseInt($("#incomingPositrons").val());
+  var ig = parseInt($("#incomingPhotons").val());
+  var oe = parseInt($("#outgoingElectrons").val());
+  var op = parseInt($("#outgoingPositrons").val());
+  var og = parseInt($("#outgoingPhotons").val());
+  var v = parseInt($("#interactions").val());
+  request.incomingElectrons = strArr(0, ie, "i");
+  request.incomingPositrons = strArr(ie, ip, "i");
+  request.incomingPhotons = strArr(ie + ip, ig, "i");
+  request.outgoingElectrons = strArr(0, oe, "o");
+  request.outgoingPositrons = strArr(oe, op, "o");
+  request.outgoingPhotons = strArr(oe + op, og, "o");
+  request.interactions = strArr(0, v, "v");
+  diagram.incoming = request.incomingElectrons.concat(request.incomingPositrons, request.incomingPhotons);
+  diagram.outgoing = request.outgoingElectrons.concat(request.outgoingPositrons, request.outgoingPhotons);
+  diagram.vertex = request.interactions;
+  diagram.electron = request.incomingElectrons.concat(request.outgoingElectrons);
+  diagram.positron = request.incomingPositrons.concat(request.outgoingPositrons);
+  diagram.photon = request.incomingPhotons.concat(request.outgoingPhotons);
+}
+/* Draws the feynman diagram according to the controls. */
+function updateDisplay() {
+  update();
+  $("#message").hide();
+  $("#inputDiagram").empty();
+  $("#inputDiagram").discfeyn(
+    Object.assign({}, diagram, {
+      innerHeight: $("#inputDiagram").width() / 2
+    })
+  );
+}
+/* Send get request to server for diagrams */
+function getDiagrams(initial) {
+  var urlDir = window.location.pathname.replace(/index\.html$/i, "").replace(/\/$/, "") + "/";
+  var data;
+  if (initial) {
+    update();
+    $("#outputDiagrams").empty();
+    reqUID = Date.now() + "" + Math.floor(Math.random() * 1000000);
+    data = {
+      "data": JSON.stringify(request),
+      "uid": reqUID
+    };
+    reqIdx = 0;
+    loaded.incoming = diagram.incoming;
+    loaded.outgoing = diagram.outgoing;
+    loaded.vertex = diagram.vertex;
+  } else {
+    reqIdx++;
+    data = {
+      "uid": reqUID,
+      "index": reqIdx
+    };
+  }  
+  $.ajax({
+    url: urlDir + "Diagrams",
+    data: data,
+    success: function(response) {
+      $("#more").hide();
+      // Append the html
+      $("#outputDiagrams").append($(response).filter("#outputDiagrams"));
+      // Run the response script
+      eval($(response).filter("script").text());
+    }
+  });
+}
+/* Draw the intput diagram on load */
+$(document).ready(function() {
+  $("#more").hide();
+  updateDisplay();
+});
+</script>
+</body>
+</html>
