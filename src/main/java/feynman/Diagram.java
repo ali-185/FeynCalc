@@ -15,7 +15,8 @@ import standardModel.Particle;
  */
 public class Diagram implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private class Node {
+	private class Node implements Serializable {
+		private static final long serialVersionUID = 1L;
 		final String name;
 		final int vertex; 
 		final Particle particle;
@@ -188,8 +189,9 @@ public class Diagram implements Serializable {
 	 * @return An iterator of each sub-diagram by creating only new
 	 * new connections. Each sub-diagram is unique.
 	 */
-	public Iterator<Diagram> getSubDiagrams(final boolean shareNodes) {
-		return new Iterator<Diagram>() {
+	public DiagramIterator getSubDiagrams(final boolean shareNodes) {
+		return new DiagramIterator() {
+			private static final long serialVersionUID = 1L;
 			// Flag indicating if returned self
 			private boolean self = false;
 			private Diagram next;

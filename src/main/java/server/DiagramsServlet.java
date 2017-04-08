@@ -9,7 +9,6 @@ import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,7 +23,6 @@ import standardModel.Particle;
  * Creates and forwards to Diagrams.jsp, a page of Feynman Diagrams. 
  * @author Alastair Crowe
  */
-@WebServlet("/Diagrams")
 public class DiagramsServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	/**
