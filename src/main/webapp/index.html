@@ -127,8 +127,8 @@ function update() {
   diagram.incoming = request.incomingElectrons.concat(request.incomingPositrons, request.incomingPhotons);
   diagram.outgoing = request.outgoingElectrons.concat(request.outgoingPositrons, request.outgoingPhotons);
   diagram.vertex = request.interactions;
-  diagram.electron = request.incomingElectrons.concat(request.outgoingElectrons);
-  diagram.positron = request.incomingPositrons.concat(request.outgoingPositrons);
+  diagram.electron = request.incomingElectrons.concat(request.outgoingPositrons);
+  diagram.positron = request.incomingPositrons.concat(request.outgoingElectrons);
   diagram.photon = request.incomingPhotons.concat(request.outgoingPhotons);
 }
 /* Draws the feynman diagram according to the controls. */

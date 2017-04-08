@@ -78,10 +78,12 @@ public class Diagram implements Serializable {
 			nodes.add(new Node(name, INCOMING_VERTEX, Particle.PHOTON, index++));
 		}
 		for(String name: outgoingElectrons) {
-			nodes.add(new Node(name, OUTGOING_VERTEX, Particle.ELECTRON, index++));
+      // An outgoing electron is equivalent to a positron
+			nodes.add(new Node(name, OUTGOING_VERTEX, Particle.ANTI_ELECTRON, index++));
 		}
 		for(String name: outgoingPositrons) {
-			nodes.add(new Node(name, OUTGOING_VERTEX, Particle.ANTI_ELECTRON, index++));
+      // An outgoing positron is equivalent to a electron
+			nodes.add(new Node(name, OUTGOING_VERTEX, Particle.ELECTRON, index++));
 		}
 		for(String name: outgoingPhotons) {
 			nodes.add(new Node(name, OUTGOING_VERTEX, Particle.PHOTON, index++));
