@@ -100,6 +100,18 @@ function update() {
     outgoingPhotons: [],
     interactions: [],
   };
+  /* Restricts the range to 0-9 */
+  function toRange(i) {
+    i = parseInt(i);
+    return $.isNumeric(i) ? Math.max(0, Math.min(9, i)) : 0;
+  }
+  var ie = toRange($("#incomingElectrons").val());
+  var ip = toRange($("#incomingPositrons").val());
+  var ig = toRange($("#incomingPhotons").val());
+  var oe = toRange($("#outgoingElectrons").val());
+  var op = toRange($("#outgoingPositrons").val());
+  var og = toRange($("#outgoingPhotons").val());
+  var v  = toRange($("#interactions").val());
   /* Returns an array of indices with the prefix prepended
    * e.g. strArr(4, 3, "z") -> ["z4", "z5", "z6"]
    */
@@ -110,13 +122,6 @@ function update() {
     }
     return arr;
   }
-  var ie = parseInt($("#incomingElectrons").val());
-  var ip = parseInt($("#incomingPositrons").val());
-  var ig = parseInt($("#incomingPhotons").val());
-  var oe = parseInt($("#outgoingElectrons").val());
-  var op = parseInt($("#outgoingPositrons").val());
-  var og = parseInt($("#outgoingPhotons").val());
-  var v = parseInt($("#interactions").val());
   request.incomingElectrons = strArr(0, ie, "i");
   request.incomingPositrons = strArr(ie, ip, "i");
   request.incomingPhotons = strArr(ie + ip, ig, "i");
@@ -177,7 +182,7 @@ function getDiagrams(initial) {
     }
   });
 }
-/* Draw the intput diagram on load */
+/* Draw the input diagram on load */
 $(document).ready(function() {
   $("#more").hide();
   updateDisplay();
